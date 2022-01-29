@@ -1,0 +1,39 @@
+:root {
+    --primary-color : white;
+    --gray-theme : gray;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.--grey-theme {
+    background-color: gray;
+}
+
+.--align {
+    padding: 10px 15px 0 10px;
+}
+
+.white-text {
+    color: var(--primary-color);
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.bold {
+    font-weight: bold;
+    color: red;
+}
+
+p, label, h1, h2, h3, div {
+    background-color: inherit;
+}
+
+.space-between {
+    justify-content: space-between;
+}

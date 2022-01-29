@@ -1,0 +1,178 @@
+<my-component>
+  <div class="master">
+    <div class="flex" style="justify-content : space-between;"> 
+      <input type="text" placeholder="Search any Product" style="width : 50%;">
+      <button onclick={openModal}> Add New Product </button>
+    </div>
+    
+    <div class={state.show ? 'overlay' : ''}> </div> 
+      <div class="modal-container --grey-theme white-text" if={state.show}>
+          <h2> {state.heading} a new Product</h2>
+          <label> Product Name </label>
+          <input type="text" placeholder="Name here" id="productName">
+
+          <label> Price </label>
+          <input type="text" placeholder="Price here" id="price">
+
+          <label> Quantity </label>
+          <input type="text" placeholder="quantity here" id="quantity">
+
+          <div class="flex space-between modal-buttons"> 
+            <button onclick={closeModal}> Close </button>
+            <button onclick={state.heading == 'Add' ? addNewProduct : editProduct}> {state.heading} </button>
+          </div>
+        </div>
+
+    <div class="products-container">
+      <product each={product in state.products} {...product} class="product-component" do-something={fillProductDetail}></product>
+    </div>
+  </div>
+
+  <script> 
+  import product from "../../product.riot";
+  import axios from 'axios';
+
+  export default {
+    state : {
+      show : false,
+      products : [],
+      heading : 'Add',
+      idToEdit : null
+    },
+
+    onMounted() {
+      this.getProductList();
+    },
+
+    // methods
+    openModal() {
+      this.update({ 
+        show : true,
+        heading : 'Add'
+      });
+    },
+
+    closeModal() {
+      this.update({ show : false });
+    },
+
+    getProductList() {
+      axios.get("http://localhost:8000/products/?ordering=-created")
+      .then(response => {
+        console.log(response.data);
+        this.update({
+          products : response.data,
+          show : false
+        })
+        console.log(this.state.products)
+      }).catch(error => console.log(error))
+    },
+
+    addNewProduct() {
+      const data = {
+        name : productName.value,
+        price : price.value,
+        quantity : quantity.value
+      }
+
+      axios.post("http://localhost:8000/product/create/", data, {})
+      .then(response => {
+        console.log(response.data);
+        this.getProductList();
+      }).catch(error => console.log(error))
+    },
+
+    fillProductDetail(e) {
+      this.update({ 
+        show : true,
+        heading : 'Edit',
+        idToEdit : e.id
+      });
+      productName.value = e.name;
+      price.value = e.price;
+      quantity.value = e.quantity;
+    },
+
+    editProduct() {
+      const data = {
+        name : productName.value,
+        price : price.value,
+        quantity : quantity.value
+      }
+
+      axios.put(`http://localhost:8000/products/${this.state.idToEdit}`, data, {})
+      .then(response => {
+        console.log(response.data);
+        this.getProductList();
+      }).catch(error => console.log(error))
+    },
+    
+    components : {
+      product
+    }
+  }
+  </script>
+
+  <style>
+  @import("../../../styles.css");
+
+  * {
+    background-color : black;
+  }
+
+  .master {
+    height : 100vh;
+    padding : 50px;
+    background-image: url("https://media.istockphoto.com/photos/scientific-microscope-in-a-nanotechnology-laboratory-picture-id1253185712?k=20&m=1253185712&s=612x612&w=0&h=TtsEmkWh4Y7UR4e5LBvYtisD1ZY7zy2EEb6ReJ1lr24=");
+    background-repeat : no-repeat;
+    background-size: cover; 
+    position : relative;
+  }
+
+  .products-container {
+    display : grid;
+    grid-template-columns : repeat(4, 1fr);
+    grid-gap :20px;
+    background : transparent;
+  }
+
+  input {
+    color : white;
+  }
+
+  ::placeholder {
+    color : grey;
+  }
+
+  .modal-container {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    position : fixed;
+    width : 40%;
+    border-radius : 10px;
+    left : 50%;
+    transform: translate(-50%, 0);
+    padding : 15px;
+    z-index: 11;
+  }
+
+  .modal-container input {
+    background : black;
+  }
+
+  .modal-buttons button {
+    width : 48%;
+    font-size : 1.3rem;
+  }
+
+  .overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5); /*dim the background*/
+  }
+
+  </style>
+</my-component>

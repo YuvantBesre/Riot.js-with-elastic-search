@@ -1,0 +1,35 @@
+<sidebar>
+  <div>
+    <div class="row">
+      <h1>Sidebar</h1>
+    </div>
+    <div if={state.showUser} class="row">
+      <user name={ state.name }/>
+    </div>
+    <product />
+    <div class="row">
+      <button onclick={toggleUser}>Toggle username</button>
+    </div>
+  </div>
+
+  <script>
+    import User from '../../includes/user/user.riot'
+    import product from "../../product.riot"
+
+    export default {
+      components: {
+        User,
+        product
+      },
+      state: {
+        name: 'Yuvant',
+        showUser: false
+      },
+      toggleUser() {
+        this.update({
+          showUser: !this.state.showUser
+        })
+      }
+    }
+  </script>
+</sidebar>
