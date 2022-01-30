@@ -8,6 +8,7 @@
     "@riotjs/lazy": "^2.0.1",
     "@riotjs/route": "^8.0.0",
     "axios": "^0.25.0",
+    "dotenv": "^14.3.2",
     "riot": "^6.0.2"
   },
   "devDependencies": {
