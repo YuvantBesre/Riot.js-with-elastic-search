@@ -1,7 +1,7 @@
 <my-component>
   <div class="master">
     <div class="flex" style="justify-content : space-between;"> 
-      <input type="text" placeholder="Search any Product" style="width : 50%;">
+      <input type="text" placeholder="Search any Product" style="width : 50%;" oninput={updateSearchQuery}>
       <button onclick={openModal}> Add New Product </button>
     </div>
     
@@ -37,7 +37,8 @@
       show : false,
       products : [],
       heading : 'Add',
-      idToEdit : null
+      idToEdit : null,
+      searchQuery : ''
     },
 
     onMounted() {
@@ -57,7 +58,7 @@
     },
 
     getProductList() {
-      axios.get("http://localhost:8000/products/?ordering=-created")
+      axios.get(`http://localhost:8000/products/?ordering=-created${this.state.searchQuery ? '&search=' + this.state.searchQuery : ''}`)
       .then(response => {
         console.log(response.data);
         this.update({
@@ -66,6 +67,11 @@
         })
         console.log(this.state.products)
       }).catch(error => console.log(error))
+    },
+
+    updateSearchQuery(event) {
+      this.update({ searchQuery : event.target.value });
+      this.getProductList();
     },
 
     addNewProduct() {
