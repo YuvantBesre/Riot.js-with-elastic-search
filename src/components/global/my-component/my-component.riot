@@ -1,6 +1,7 @@
 <my-component>
   <div class="master">
     <div class="flex" style="justify-content : space-between; background : transparent;"> 
+      <h4 class="white-text"> {state.totalProducts} Total Products </h4>
       <input type="text" placeholder="Search any Product" style="width : 50%;" oninput={updateSearchQuery}>
       <button onclick={openModal}> Add New Product </button>
     </div>
@@ -88,13 +89,11 @@
           nextPage : response.data.next,
           show : false
         })
-        console.log(this.state.totalProducts)
-        console.log(Math.ceil(this.state.totalProducts/2) * this.state.currentPage)
       }).catch(error => console.log(error))
     },
 
     updateSearchQuery(event) {
-      this.update({ searchQuery : event.target.value });
+      this.update({ searchQuery : event.target.value, currentPage : 1 });
       this.getProductList();
     },
 
